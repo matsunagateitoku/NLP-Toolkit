@@ -29,7 +29,7 @@ def ner():
     return render_template("ner.html", named_entities=named_entities, displacy_html=displacy_html)
 
 @app.route('/web', methods=["GET", 'POST'])
-def handle_form():
+def web():
     url = request.form['url_input']
     text = fetch_website_text(url)
     
