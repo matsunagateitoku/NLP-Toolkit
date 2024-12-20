@@ -28,6 +28,18 @@ def ner():
     
     return render_template("ner.html", named_entities=named_entities, displacy_html=displacy_html)
 
+@app.route('/web', methods=['POST'])
+def handle_form():
+    url = request.form['url_input']
+    text = fetch_website_text(url)
+    
+    if text:
+        named_entities, displacy_html = extract_named_entities(text)
+        return render_template('web.html', named_entities=named_entities, displacy_html=displacy_html)
+    else:
+        error_message = "Error fetching or processing the URL. Please check the URL and try again."
+        return render_template('index.html', error_message=error_message)
+
 @app.route('/about')
 def about():
     return render_template('about.html')
