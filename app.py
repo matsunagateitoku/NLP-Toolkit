@@ -28,6 +28,24 @@ def ner():
     
     return render_template("ner.html", named_entities=named_entities, displacy_html=displacy_html)
 
+@app.route('/pos', methods=["GET", "POST"])
+def pos():
+    pos_tags = None
+
+    if request.method == "POST":
+        input_text = request.form.get("user_input")
+        if input_text:
+            logging.debug(f"Received input for POS tagging: {input_text}")
+            try:
+                pos_tags = extract_pos_tags(input_text)
+                if pos_tags is None:
+                    pos_tags = [("Error", "Unable to process the text for POS tagging.")]
+            except Exception:
+                logging.exception("POS tagging failed")
+                pos_tags = [("Error", "Unable to process the text for POS tagging.")]
+    return render_template("pos.html", pos_tags=pos_tags)
+
+
 @app.route('/web', methods=["GET", 'POST'])
 def web():
     url = request.form['url_input']
