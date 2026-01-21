@@ -60,6 +60,16 @@ def web():
         error_message = "Error fetching or processing the URL. Please check the URL and try again."
         return render_template('web.html', error_message=error_message)
 
+# New: Wordcloud page (coming soon)
+@app.route('/wordcloud', methods=["GET"])
+def wordcloud():
+    return render_template('wordcloud.html')
+
+# New: Semantic parse page (coming soon)
+@app.route('/semantic-parse', methods=["GET"])
+def semantic_parse():
+    return render_template('semantic_parse.html')
+
 @app.route('/about')
 def about():
     return render_template('about.html')
