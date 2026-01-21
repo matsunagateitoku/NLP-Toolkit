@@ -1,6 +1,6 @@
 # app.py
 from flask import Flask, render_template, request
-from text_utils import extract_named_entities
+from text_utils import extract_named_entities, extract_pos_tags, fetch_website_text
 import logging
 
 # Set up logging for the Flask app
@@ -31,25 +31,27 @@ def ner():
 @app.route('/pos', methods=["GET", "POST"])
 def pos():
     pos_tags = None
+    pos_html = None
 
     if request.method == "POST":
         input_text = request.form.get("user_input")
         if input_text:
             logging.debug(f"Received input for POS tagging: {input_text}")
             try:
-                pos_tags = extract_pos_tags(input_text)
+                # extract_pos_tags returns (pos_tags_list, html)
+                pos_tags, pos_html = extract_pos_tags(input_text, visualize=True)
                 if pos_tags is None:
                     pos_tags = [("Error", "Unable to process the text for POS tagging.")]
             except Exception:
                 logging.exception("POS tagging failed")
                 pos_tags = [("Error", "Unable to process the text for POS tagging.")]
-    return render_template("pos.html", pos_tags=pos_tags)
+    return render_template("pos.html", pos_tags=pos_tags, pos_html=pos_html)
 
 
 @app.route('/web', methods=["GET", 'POST'])
 def web():
-    url = request.form['url_input']
-    text = fetch_website_text(url)
+    url = request.form.get('url_input')
+    text = fetch_website_text(url) if url else None
     
     if text:
         named_entities, displacy_html = extract_named_entities(text)
