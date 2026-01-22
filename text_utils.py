@@ -4,10 +4,6 @@ import logging
 from spacy import displacy
 from html import escape
 
-# Add this to text_utils.py (adjust imports to your project style)
-import requests
-from bs4 import BeautifulSoup
-
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -102,19 +98,6 @@ def extract_pos_tags(text, visualize=False):
         logging.debug("POS tagging completed.")
         return pos_tags, html
 
-    def fetch_website_text(url, timeout=10):
-    """Fetch visible text from a URL and return as plain text (or None on failure)."""
-    try:
-        r = requests.get(url, timeout=timeout)
-        r.raise_for_status()
-    except Exception:
-        return None
-    soup = BeautifulSoup(r.text, "html.parser")
-    # remove scripts/styles then join visible text
-    for tag in soup(["script", "style", "noscript"]):
-        tag.decompose()
-    text = " ".join(t.strip() for t in soup.stripped_strings)
-    return text
 
 
     except Exception as e:
