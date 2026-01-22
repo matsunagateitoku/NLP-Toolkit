@@ -32,8 +32,6 @@ def ner():
 def pos():
     pos_tags = None
     pos_html = None
-    return render_template('pos.html')
-
     if request.method == "POST":
         input_text = request.form.get("user_input")
         if input_text:
