@@ -1,6 +1,6 @@
 # app.py
 from flask import Flask, render_template, request
-from text_utils import extract_named_entities, extract_pos_tags, fetch_website_text
+from text_utils import extract_named_entities, extract_pos_tags
 import logging
 
 # Set up logging for the Flask app
