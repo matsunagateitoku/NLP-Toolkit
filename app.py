@@ -32,6 +32,7 @@ def ner():
 def pos():
     pos_tags = None
     pos_html = None
+    return render_template('pos.html')
 
     if request.method == "POST":
         input_text = request.form.get("user_input")
@@ -59,10 +60,6 @@ def web():
     else:
         error_message = "Error fetching or processing the URL. Please check the URL and try again."
         return render_template('web.html', error_message=error_message)
-
-@app.route('/pos')
-def pos():
-    return render_template('pos.html')
 
 @app.route('/wordcloud')
 def wordcloud():
