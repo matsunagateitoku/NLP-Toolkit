@@ -60,8 +60,7 @@ def web():
         error_message = "Error fetching or processing the URL. Please check the URL and try again."
         return render_template('web.html', error_message=error_message)
 
-# New: Wordcloud page (coming soon)
-@app.route('/wordcloud', methods=["GET"])
+@app.route('/wordcloud')
 def wordcloud():
     return render_template('wordcloud.html')
 
