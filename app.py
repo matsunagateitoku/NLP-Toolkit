@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request
-from text_utils import (
-    extract_named_entities,
-    extract_pos_tags,
-)
+from text_utils import extract_named_entities, extract_pos_tags
+
 import logging
 
 # Logging
