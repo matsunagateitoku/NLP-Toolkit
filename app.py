@@ -1,5 +1,14 @@
 from flask import Flask, render_template, request
-from text_utils import extract_named_entities, extract_pos_tags
+try:
+    from text_utils import (
+        extract_named_entities,
+        extract_pos_tags,
+        fetch_website_text
+    )
+except ImportError as e:
+    print("IMPORT ERROR:", e)
+    fetch_website_text = None
+
 
 import logging
 
