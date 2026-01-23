@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}NLP Tools{% endblock %}
+
+{% block content %}
+<div class="button-container">
+    <a href="{{ url_for('pos') }}" class="button">POS Tagging</a>
+    <a href="{{ url_for('wordcloud') }}" class="button">Wordcloud</a>
+    <a href="{{ url_for('semantic_parse') }}" class="button">Semantic Parse</a>
+    <a href="{{ url_for('ner') }}" class="button">NER</a>
+</div>
+{% endblock %}
