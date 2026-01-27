@@ -29,6 +29,11 @@ def ner():
     
     return render_template("ner.html", named_entities=named_entities, displacy_html=displacy_html)
 
+
+@app.route('/pos')
+def about():
+    return render_template('pos.html')
+
 # @app.route('/pos', methods=["GET", "POST"])
 # def pos():
 #     pos_tags = None
