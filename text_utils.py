@@ -45,7 +45,7 @@ def extract_named_entities(text):
         # Handle errors gracefully
         logging.error(f"Error in extract_named_entities: {e}")
         return None, None
-
+"""
 def extract_pos_tags(text, visualize=False):
     """
     Perform POS tagging on the given text.
@@ -97,7 +97,7 @@ def extract_pos_tags(text, visualize=False):
 
         logging.debug("POS tagging completed.")
         return pos_tags, html
-
+"""
 
 
     except Exception as e:
