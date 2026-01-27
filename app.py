@@ -28,24 +28,24 @@ def ner():
     
     return render_template("ner.html", named_entities=named_entities, displacy_html=displacy_html)
 
-@app.route('/pos', methods=["GET", "POST"])
-def pos():
-    pos_tags = None
-    pos_html = None
+# @app.route('/pos', methods=["GET", "POST"])
+# def pos():
+#     pos_tags = None
+#     pos_html = None
 
-    if request.method == "POST":
-        input_text = request.form.get("user_input")
-        if input_text:
-            logging.debug(f"Received input for POS tagging: {input_text}")
-            try:
-                # extract_pos_tags returns (pos_tags_list, html)
-                pos_tags, pos_html = extract_pos_tags(input_text, visualize=True)
-                if pos_tags is None:
-                    pos_tags = [("Error", "Unable to process the text for POS tagging.")]
-            except Exception:
-                logging.exception("POS tagging failed")
-                pos_tags = [("Error", "Unable to process the text for POS tagging.")]
-    return render_template("pos.html", pos_tags=pos_tags, pos_html=pos_html)
+#     if request.method == "POST":
+#         input_text = request.form.get("user_input")
+#         if input_text:
+#             logging.debug(f"Received input for POS tagging: {input_text}")
+#             try:
+#                 # extract_pos_tags returns (pos_tags_list, html)
+#                 pos_tags, pos_html = extract_pos_tags(input_text, visualize=True)
+#                 if pos_tags is None:
+#                     pos_tags = [("Error", "Unable to process the text for POS tagging.")]
+#             except Exception:
+#                 logging.exception("POS tagging failed")
+#                 pos_tags = [("Error", "Unable to process the text for POS tagging.")]
+#     return render_template("pos.html", pos_tags=pos_tags, pos_html=pos_html)
 
 
 @app.route('/web', methods=["GET", 'POST'])
