@@ -31,7 +31,7 @@ def ner():
 
 
 @app.route('/pos')
-def about():
+def pos():
     return render_template('pos.html')
 
 # @app.route('/pos', methods=["GET", "POST"])
