@@ -72,7 +72,7 @@ def wordcloud():
 
 @app.route('/semantic-parse', methods=["GET"])
 def semantic_parse():
-    return render_template('semantic_parse.html')
+    return render_template('semantic.html')
 
 @app.route('/about')
 def about():
