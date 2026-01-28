@@ -68,7 +68,7 @@ def web():
 
 @app.route('/wordcloud')
 def wordcloud():
-    return render_template('wordcloud.html')
+    return render_template('wc.html')
 
 @app.route('/semantic', methods=["GET"])
 def semantic():
