@@ -8,5 +8,9 @@ experimented with templet based pages but it was failing os I rolled back. Shoul
 
 *** To Do List ***
 
--clean up old files, particluarly in templetes
-- 
+- clean up old files, particluarly in templetes
+- wordcloud is set up to extend base, make the other pages like that
+- make wordcloud actully work
+- make POS work
+- make parse work
+- make them work on a URL
