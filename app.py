@@ -54,6 +54,9 @@ def pos():
 #     return render_template("pos.html", pos_tags=pos_tags, pos_html=pos_html)
 
 
+# /web route: accepts a URL from a form, fetches the webpage text
+# (requires fetch_website_text function), performs named entity recognition (NER),
+# and renders the results in web.html. Shows an error message if processing fails.
 @app.route('/web', methods=["GET", 'POST'])
 def web():
     url = request.form.get('url_input')
