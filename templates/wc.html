@@ -1,11 +1,42 @@
 {% extends "base.html" %}
-
-{% block title %}Wordcloud — Coming Soon{% endblock %}
-
+{% block title %}Word Cloud Generator{% endblock %}
 {% block content %}
 <div class="container">
-    <h1>Wordcloud</h1>
-    <p class="coming">Coming soon.</p>
+    <h1>🌥️ Word Cloud Generator</h1>
+    <p class="subtitle">Visualize the most frequent words in your text</p>
+    
+    <form method="POST" class="input-form">
+        <label for="user_input">Enter your text:</label>
+        <textarea name="user_input" id="user_input" rows="8" placeholder="Paste or type your text here..." required></textarea>
+        
+        <div class="options">
+            <label for="max_words">Maximum words:</label>
+            <input type="number" name="max_words" id="max_words" value="100" min="10" max="500">
+        </div>
+        
+        <button type="submit">Generate Word Cloud</button>
+    </form>
+    
+    {% if wordcloud_image %}
+        {% if wordcloud_image == "error" %}
+            <div class="error">
+                ❌ Error generating word cloud. Please check your input and try again.
+            </div>
+        {% else %}
+            <div class="result">
+                <h2>Your Word Cloud</h2>
+                <div class="wordcloud-image">
+                    <img src="data:image/png;base64,{{ wordcloud_image }}" alt="Word Cloud">
+                </div>
+                {% if word_count %}
+                    <div class="stats">
+                        📊 Total words in text: {{ word_count }}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endif %}
+    
     <p><a href="{{ url_for('index') }}">← Back to home</a></p>
 </div>
 {% endblock %}
