@@ -1,7 +1,7 @@
 # app.py
 from flask import Flask, render_template, request
 from text_utils import extract_named_entities
-from text_utils import extract_named_entities, generate_wordcloud
+from text_utils import extract_named_entities, generate_wordcloud, fetch_website_text
 #extract_pos_tags
 import logging
 
