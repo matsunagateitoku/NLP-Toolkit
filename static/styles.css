@@ -65,3 +65,92 @@ body {
     text-align: center;
 }
 
+/* Word Cloud Specific Styles */
+.subtitle {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.input-form {
+    margin: 20px 0;
+}
+
+.input-form textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    box-sizing: border-box;
+}
+
+.options {
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.options label {
+    font-weight: 600;
+    color: #555;
+}
+
+.options input[type="number"] {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: 100px;
+}
+
+.input-form button {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 30px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+}
+
+.input-form button:hover {
+    background-color: #0056b3;
+}
+
+.result {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.wordcloud-image {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.wordcloud-image img {
+    max-width: 100%;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.stats {
+    color: #666;
+    font-size: 14px;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.error {
+    color: #d9534f;
+    padding: 10px;
+    background-color: #f8d7da;
+    border-radius: 4px;
+    margin-top: 20px;
+}
+
