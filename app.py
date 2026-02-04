@@ -69,9 +69,41 @@ def web():
         error_message = "Error fetching or processing the URL. Please check the URL and try again."
         return render_template('web.html', error_message=error_message)
 
-@app.route('/wordcloud')
+
+@app.route('/wordcloud', methods=["GET", "POST"])
 def wordcloud():
-    return render_template('wc.html')
+    wordcloud_image = None
+    word_count = None
+    
+    if request.method == "POST":
+        input_text = request.form.get("user_input")
+        max_words = request.form.get("max_words", 100)
+        
+        try:
+            max_words = int(max_words)
+        except:
+            max_words = 100
+        
+        if input_text:
+            logging.debug(f"Received input for word cloud: {input_text[:100]}...")
+            
+            # Generate word cloud
+            wordcloud_image = generate_wordcloud(input_text, max_words=max_words)
+            
+            # Count words for stats
+            word_count = len(input_text.split())
+            
+            if wordcloud_image is None:
+                wordcloud_image = "error"
+    
+    return render_template('wc.html', wordcloud_image=wordcloud_image, word_count=word_count)
+
+
+
+
+
+
+
 
 @app.route('/semantic', methods=["GET"])
 def semantic():
