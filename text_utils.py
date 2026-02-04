@@ -5,6 +5,51 @@ from spacy import displacy
 from html import escape
 
 
+
+
+import requests
+from bs4 import BeautifulSoup
+
+def fetch_website_text(url):
+    """Fetch and extract text content from a URL."""
+    logging.debug(f"Fetching content from URL: {url}")
+    
+    try:
+        # Add headers to mimic a browser request
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        
+        # Fetch the webpage
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()  # Raise an error for bad status codes
+        
+        # Parse HTML content
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Remove script and style elements
+        for script in soup(["script", "style", "nav", "header", "footer"]):
+            script.decompose()
+        
+        # Get text
+        text = soup.get_text(separator=' ', strip=True)
+        
+        # Clean up whitespace
+        lines = (line.strip() for line in text.splitlines())
+        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+        text = ' '.join(chunk for chunk in chunks if chunk)
+        
+        logging.debug(f"Successfully fetched {len(text)} characters from URL")
+        return text
+        
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Error fetching URL: {e}")
+        return None
+    except Exception as e:
+        logging.error(f"Error processing webpage: {e}")
+        return None
+
+
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 
