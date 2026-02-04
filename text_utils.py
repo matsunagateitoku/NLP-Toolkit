@@ -17,6 +17,58 @@ except Exception as e:
     logging.error(f"Error loading spaCy model: {e}")
     nlp = None  # If spaCy model fails to load, set nlp to None.
 
+
+
+from wordcloud import WordCloud
+import matplotlib
+matplotlib.use('Agg')  # Use non-GUI backend
+import matplotlib.pyplot as plt
+import base64
+from io import BytesIO
+
+def generate_wordcloud(text, max_words=100, background_color='white'):
+    """Generate a word cloud from text and return as base64 encoded image."""
+    logging.debug("Starting word cloud generation...")
+    
+    try:
+        if not text or len(text.strip()) == 0:
+            logging.error("Empty text provided for word cloud")
+            return None
+        
+        logging.debug(f"Generating word cloud for text of length: {len(text)}")
+        
+        # Create word cloud
+        wordcloud = WordCloud(
+            width=800, 
+            height=400,
+            background_color=background_color,
+            max_words=max_words,
+            colormap='viridis'  # Nice color scheme
+        ).generate(text)
+        
+        # Create matplotlib figure
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.imshow(wordcloud, interpolation='bilinear')
+        ax.axis('off')
+        plt.tight_layout(pad=0)
+        
+        # Convert to base64 for HTML embedding
+        buffer = BytesIO()
+        plt.savefig(buffer, format='png', bbox_inches='tight')
+        buffer.seek(0)
+        image_base64 = base64.b64encode(buffer.read()).decode()
+        plt.close(fig)
+        
+        logging.debug("Word cloud generated successfully")
+        return image_base64
+        
+    except Exception as e:
+        logging.error(f"Error generating word cloud: {e}")
+        return None
+
+
+
+
 def extract_named_entities(text):
     """Extract named entities from the text using spaCy and generate displacy visualization."""
     logging.debug("Starting NER extraction...")
