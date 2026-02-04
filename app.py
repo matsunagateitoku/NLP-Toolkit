@@ -75,9 +75,11 @@ def web():
 def wordcloud():
     wordcloud_image = None
     word_count = None
+    error_message = None
     
     if request.method == "POST":
         input_text = request.form.get("user_input")
+        url_input = request.form.get("url_input")
         max_words = request.form.get("max_words", 100)
         
         try:
@@ -85,22 +87,34 @@ def wordcloud():
         except:
             max_words = 100
         
-        if input_text:
-            logging.debug(f"Received input for word cloud: {input_text[:100]}...")
+        # Determine source: URL or text input
+        text_to_process = None
+        
+        if url_input:
+            # Fetch text from URL
+            logging.debug(f"Processing URL: {url_input}")
+            text_to_process = fetch_website_text(url_input)
+            if text_to_process is None:
+                error_message = "Error fetching content from URL. Please check the URL and try again."
+        elif input_text:
+            text_to_process = input_text
+        
+        if text_to_process:
+            logging.debug(f"Generating word cloud for text of length: {len(text_to_process)}")
             
             # Generate word cloud
-            wordcloud_image = generate_wordcloud(input_text, max_words=max_words)
+            wordcloud_image = generate_wordcloud(text_to_process, max_words=max_words)
             
             # Count words for stats
-            word_count = len(input_text.split())
+            word_count = len(text_to_process.split())
             
             if wordcloud_image is None:
-                wordcloud_image = "error"
+                error_message = "Error generating word cloud. Please try again."
     
-    return render_template('wc.html', wordcloud_image=wordcloud_image, word_count=word_count)
-
-
-
+    return render_template('wc.html', 
+                         wordcloud_image=wordcloud_image, 
+                         word_count=word_count,
+                         error_message=error_message)
 
 
 
