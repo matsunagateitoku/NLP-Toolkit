@@ -1,3 +1,7 @@
+wordcloud==1.9.3
+matplotlib==3.8.2
+Pillow==10.1.0
+
 annotated-types==0.7.0
 beautifulsoup4==4.12.3
 blinker==1.9.0
