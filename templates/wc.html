@@ -3,11 +3,19 @@
 {% block content %}
 <div class="container">
     <h1>🌥️ Word Cloud Generator</h1>
-    <p class="subtitle">Visualize the most frequent words in your text</p>
+    <p class="subtitle">Visualize the most frequent words in your text or from a website</p>
     
     <form method="POST" class="input-form">
-        <label for="user_input">Enter your text:</label>
-        <textarea name="user_input" id="user_input" rows="8" placeholder="Paste or type your text here..." required></textarea>
+        <div class="input-section">
+            <label for="url_input">Enter a URL:</label>
+            <input type="url" name="url_input" id="url_input" placeholder="https://example.com/article">
+            <p class="or-divider">— OR —</p>
+        </div>
+        
+        <div class="input-section">
+            <label for="user_input">Enter your text:</label>
+            <textarea name="user_input" id="user_input" rows="8" placeholder="Paste or type your text here..."></textarea>
+        </div>
         
         <div class="options">
             <label for="max_words">Maximum words:</label>
@@ -17,24 +25,24 @@
         <button type="submit">Generate Word Cloud</button>
     </form>
     
+    {% if error_message %}
+        <div class="error">
+            ❌ {{ error_message }}
+        </div>
+    {% endif %}
+    
     {% if wordcloud_image %}
-        {% if wordcloud_image == "error" %}
-            <div class="error">
-                ❌ Error generating word cloud. Please check your input and try again.
+        <div class="result">
+            <h2>Your Word Cloud</h2>
+            <div class="wordcloud-image">
+                <img src="data:image/png;base64,{{ wordcloud_image }}" alt="Word Cloud">
             </div>
-        {% else %}
-            <div class="result">
-                <h2>Your Word Cloud</h2>
-                <div class="wordcloud-image">
-                    <img src="data:image/png;base64,{{ wordcloud_image }}" alt="Word Cloud">
+            {% if word_count %}
+                <div class="stats">
+                    📊 Total words processed: {{ word_count }}
                 </div>
-                {% if word_count %}
-                    <div class="stats">
-                        📊 Total words in text: {{ word_count }}
-                    </div>
-                {% endif %}
-            </div>
-        {% endif %}
+            {% endif %}
+        </div>
     {% endif %}
     
     <p><a href="{{ url_for('index') }}">← Back to home</a></p>
