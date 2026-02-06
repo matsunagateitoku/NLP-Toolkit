@@ -62,7 +62,32 @@ except Exception as e:
     logging.error(f"Error loading spaCy model: {e}")
     nlp = None  # If spaCy model fails to load, set nlp to None.
 
-
+def extract_dependencies(text):
+    """Extract dependency parse information from text using spaCy."""
+    logging.debug("Starting dependency parsing...")
+    
+    try:
+        if nlp is None:
+            logging.error("spaCy model is not loaded.")
+            raise ValueError("spaCy model is not loaded. Please ensure the model is correctly installed.")
+        
+        logging.debug(f"Processing text for dependency parsing: {text!r}")
+        doc = nlp(text)
+        
+        # Extract dependency information: (token, dependency_label, head_token)
+        dependencies = [(token.text, token.dep_, token.head.text) for token in doc]
+        
+        # Generate the displacy HTML for dependency visualization
+        html = displacy.render(doc, style="dep", page=True)
+        
+        logging.debug(f"Dependencies extracted: {dependencies}")
+        logging.debug("Displacy dependency visualization generated.")
+        
+        return dependencies, html
+        
+    except Exception as e:
+        logging.error(f"Error in extract_dependencies: {e}")
+        return None, None
 
 from wordcloud import WordCloud
 import matplotlib
