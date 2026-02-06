@@ -143,58 +143,61 @@ def extract_named_entities(text):
         logging.error(f"Error in extract_named_entities: {e}")
         return None, None
 
-# def extract_pos_tags(text, visualize=False):
-#     """
-#     Perform POS tagging on the given text.
+def extract_pos_tags(text, visualize=False):
+    """
+    Perform POS tagging on the given text.
 
-#     Returns:
-#       - pos_tags: list of tuples (token_text, coarse_pos, fine_grained_tag)
-#       - html: If visualize==True, an HTML string representing tokens + POS; otherwise None
+    Returns:
+      - pos_tags: list of tuples (token_text, coarse_pos, fine_grained_tag)
+      - html: If visualize==True, an HTML string representing tokens + POS; otherwise None
 
-#     visualize:
-#       - If False (default), function returns only the pos_tags list and html is None.
-#       - If True, function will attempt to generate an HTML visualization. It prefers to
-#         use spaCy's displaCy dependency visualizer (style='dep') for a richer visual,
-#         falling back to a simple inline HTML token/POS representation if that fails.
-#     """
-#     logging.debug("Starting POS tagging...")
-#     try:
-#         if nlp is None:
-#             logging.error("spaCy model is not loaded.")
-#             raise ValueError("spaCy model is not loaded. Please ensure the model is correctly installed.")
+    visualize:
+      - If False (default), function returns only the pos_tags list and html is None.
+      - If True, function will attempt to generate an HTML visualization. It prefers to
+        use spaCy's displaCy dependency visualizer (style='dep') for a richer visual,
+        falling back to a simple inline HTML token/POS representation if that fails.
+    """
+    logging.debug("Starting POS tagging...")
+    try:
+        if nlp is None:
+            logging.error("spaCy model is not loaded.")
+            raise ValueError("spaCy model is not loaded. Please ensure the model is correctly installed.")
         
-#         logging.debug(f"Processing text for POS tagging: {text!r}")
-#         doc = nlp(text)
+        logging.debug(f"Processing text for POS tagging: {text!r}")
+        doc = nlp(text)
 
-#         # Create a list of token-level POS information
-#         pos_tags = [(token.text, token.pos_, token.tag_) for token in doc]
-#         logging.debug(f"POS tags extracted: {pos_tags}")
+        # Create a list of token-level POS information
+        pos_tags = [(token.text, token.pos_, token.tag_) for token in doc]
+        logging.debug(f"POS tags extracted: {pos_tags}")
 
-#         html = None
-#         if visualize:
-#             try:
-#                 # Try rendering a dependency visualization (useful to inspect token relations + POS)
-#                 logging.debug("Generating displacy dependency visualization for POS.")
-#                 # displacy 'dep' includes tokens and their POS/dependency; returns a full HTML page when page=True
-#                 html = displacy.render(doc, style="dep", page=True)
-#             except Exception as e:
-#                 # Fallback: produce a simple inline HTML listing tokens with POS tags
-#                 logging.warning(f"displacy dependency render failed, falling back to simple HTML. Error: {e}")
-#                 token_spans = []
-#                 for token in doc:
-#                     # Escape token text to avoid HTML injection
-#                     t = escape(token.text)
-#                     token_spans.append(
-#                         f'<span style="display:inline-block;margin:6px;padding:4px;border-radius:4px;'
-#                         f'background:#f2f2f2;border:1px solid #ddd;">'
-#                         f'<strong>{t}</strong><br/><small>{escape(token.pos_)} ({escape(token.tag_)})</small>'
-#                         f'</span>'
-#                     )
-#                 html = '<div style="font-family:Arial,Helvetica,sans-serif;">' + ''.join(token_spans) + '</div>'
+        html = None
+        if visualize:
+            try:
+                # Try rendering a dependency visualization (useful to inspect token relations + POS)
+                logging.debug("Generating displacy dependency visualization for POS.")
+                # displacy 'dep' includes tokens and their POS/dependency; returns a full HTML page when page=True
+                html = displacy.render(doc, style="dep", page=True)
+            except Exception as e:
+                # Fallback: produce a simple inline HTML listing tokens with POS tags
+                logging.warning(f"displacy dependency render failed, falling back to simple HTML. Error: {e}")
+                token_spans = []
+                for token in doc:
+                    # Escape token text to avoid HTML injection
+                    t = escape(token.text)
+                    token_spans.append(
+                        f'<span style="display:inline-block;margin:6px;padding:4px;border-radius:4px;'
+                        f'background:#f2f2f2;border:1px solid #ddd;">'
+                        f'<strong>{t}</strong><br/><small>{escape(token.pos_)} ({escape(token.tag_)})</small>'
+                        f'</span>'
+                    )
+                html = '<div style="font-family:Arial,Helvetica,sans-serif;">' + ''.join(token_spans) + '</div>'
 
-#         logging.debug("POS tagging completed.")
-#         return pos_tags, html
+        logging.debug("POS tagging completed.")
+        return pos_tags, html
 
+    except Exception as e:
+        logging.error(f"Error in extract_pos_tags: {e}")
+        return None, None
 
     except Exception as e:
         logging.error(f"Error in extract_pos_tags: {e}")
