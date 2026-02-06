@@ -20,9 +20,9 @@
     
     {% if pos_html %}
         <div class="result">
-            <h2>Token Visualization</h2>
-            <p class="info-text">Each token is labeled with its part of speech</p>
-            <div class="visualization">
+            <h2>Text with POS Tags</h2>
+            <p class="info-text">Each word is labeled with its part of speech (color-coded by category)</p>
+            <div class="pos-visualization">
                 {{ pos_html|safe }}
             </div>
         </div>
@@ -30,46 +30,141 @@
     
     {% if pos_tags %}
         <div class="result">
-            <h2>Detailed POS Tags</h2>
-            <div class="pos-table-container">
-                <table class="pos-table">
-                    <thead>
-                        <tr>
-                            <th>#</th>
-                            <th>Token</th>
-                            <th>POS (Coarse)</th>
-                            <th>Tag (Fine-grained)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for token, pos, tag in pos_tags %}
-                        <tr>
-                            <td>{{ loop.index }}</td>
-                            <td><strong>{{ token }}</strong></td>
-                            <td><span class="pos-badge">{{ pos }}</span></td>
-                            <td><code>{{ tag }}</code></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <h2>All Words with Tags</h2>
+            <div class="word-tag-list">
+                {% for token, pos, tag in pos_tags %}
+                    <span class="word-tag-item pos-{{ pos }}">
+                        <strong>{{ token }}</strong>
+                        <span class="tag-label">{{ pos }}</span>
+                    </span>
+                {% endfor %}
             </div>
-            
-            <div class="pos-legend">
-                <h3>POS Tag Reference:</h3>
-                <div class="legend-grid">
-                    <div><strong>NOUN</strong> - Noun (person, place, thing)</div>
-                    <div><strong>VERB</strong> - Verb (action, state)</div>
-                    <div><strong>ADJ</strong> - Adjective (describes noun)</div>
-                    <div><strong>ADV</strong> - Adverb (modifies verb/adj)</div>
-                    <div><strong>PRON</strong> - Pronoun (I, you, he, she)</div>
-                    <div><strong>DET</strong> - Determiner (the, a, an)</div>
-                    <div><strong>ADP</strong> - Preposition (in, on, at, to)</div>
-                    <div><strong>CONJ</strong> - Conjunction (and, but, or)</div>
-                    <div><strong>NUM</strong> - Number (one, two, 2024)</div>
-                    <div><strong>PROPN</strong> - Proper noun (names)</div>
-                    <div><strong>AUX</strong> - Auxiliary verb (is, has, will)</div>
-                    <div><strong>PUNCT</strong> - Punctuation (., !, ?)</div>
+        </div>
+    {% endif %}
+    
+    {% if grouped_tags %}
+        <div class="result">
+            <h2>Words Grouped by Type</h2>
+            <div class="grouped-container">
+                {% if grouped_tags.get('NOUN') or grouped_tags.get('PROPN') %}
+                <div class="group-box">
+                    <h3 class="group-title pos-NOUN">Nouns</h3>
+                    <div class="group-words">
+                        {% if grouped_tags.get('NOUN') %}
+                            {% for word in grouped_tags['NOUN'] %}
+                                <span class="group-word">{{ word }}</span>
+                            {% endfor %}
+                        {% endif %}
+                        {% if grouped_tags.get('PROPN') %}
+                            {% for word in grouped_tags['PROPN'] %}
+                                <span class="group-word">{{ word }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
                 </div>
+                {% endif %}
+                
+                {% if grouped_tags.get('VERB') or grouped_tags.get('AUX') %}
+                <div class="group-box">
+                    <h3 class="group-title pos-VERB">Verbs</h3>
+                    <div class="group-words">
+                        {% if grouped_tags.get('VERB') %}
+                            {% for word in grouped_tags['VERB'] %}
+                                <span class="group-word">{{ word }}</span>
+                            {% endfor %}
+                        {% endif %}
+                        {% if grouped_tags.get('AUX') %}
+                            {% for word in grouped_tags['AUX'] %}
+                                <span class="group-word">{{ word }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if grouped_tags.get('ADJ') %}
+                <div class="group-box">
+                    <h3 class="group-title pos-ADJ">Adjectives</h3>
+                    <div class="group-words">
+                        {% for word in grouped_tags['ADJ'] %}
+                            <span class="group-word">{{ word }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if grouped_tags.get('ADV') %}
+                <div class="group-box">
+                    <h3 class="group-title pos-ADV">Adverbs</h3>
+                    <div class="group-words">
+                        {% for word in grouped_tags['ADV'] %}
+                            <span class="group-word">{{ word }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if grouped_tags.get('PRON') %}
+                <div class="group-box">
+                    <h3 class="group-title pos-PRON">Pronouns</h3>
+                    <div class="group-words">
+                        {% for word in grouped_tags['PRON'] %}
+                            <span class="group-word">{{ word }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if grouped_tags.get('DET') %}
+                <div class="group-box">
+                    <h3 class="group-title pos-DET">Determiners</h3>
+                    <div class="group-words">
+                        {% for word in grouped_tags['DET'] %}
+                            <span class="group-word">{{ word }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if grouped_tags.get('ADP') %}
+                <div class="group-box">
+                    <h3 class="group-title pos-ADP">Prepositions</h3>
+                    <div class="group-words">
+                        {% for word in grouped_tags['ADP'] %}
+                            <span class="group-word">{{ word }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if grouped_tags.get('CCONJ') or grouped_tags.get('SCONJ') %}
+                <div class="group-box">
+                    <h3 class="group-title pos-CONJ">Conjunctions</h3>
+                    <div class="group-words">
+                        {% if grouped_tags.get('CCONJ') %}
+                            {% for word in grouped_tags['CCONJ'] %}
+                                <span class="group-word">{{ word }}</span>
+                            {% endfor %}
+                        {% endif %}
+                        {% if grouped_tags.get('SCONJ') %}
+                            {% for word in grouped_tags['SCONJ'] %}
+                                <span class="group-word">{{ word }}</span>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                {% if grouped_tags.get('NUM') %}
+                <div class="group-box">
+                    <h3 class="group-title pos-NUM">Numbers</h3>
+                    <div class="group-words">
+                        {% for word in grouped_tags['NUM'] %}
+                            <span class="group-word">{{ word }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
             </div>
         </div>
     {% endif %}
