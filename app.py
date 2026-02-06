@@ -29,27 +29,6 @@ def ner():
     return render_template("ner.html", named_entities=named_entities, displacy_html=displacy_html)
 
 
-@app.route('/pos', methods=["GET", "POST"])
-def pos():
-    pos_tags = None
-    pos_html = None
-    error_message = None
-    
-    if request.method == "POST":
-        input_text = request.form.get("user_input")
-        
-        if input_text:
-            logging.debug(f"Received input for POS tagging: {input_text}")
-            try:
-                # extract_pos_tags returns (pos_tags_list, html)
-                pos_tags, pos_html = extract_pos_tags(input_text, visualize=True)
-                if pos_tags is None:
-                    error_message = "Unable to process the text for POS tagging."
-            except Exception as e:
-                logging.exception("POS tagging failed")
-                error_message = "Unable to process the text for POS tagging."
-    
-    return render_template("pos.html", pos_tags=pos_tags, pos_html=pos_html, error_message=error_message)
 
 
 # /web route: accepts a URL from a form, fetches the webpage text
@@ -118,8 +97,31 @@ def wordcloud():
 
 
 
-@app.route('/semantic', methods=["GET"])
+@app.route('/pos', methods=["GET", "POST"])
+def pos():
+    pos_tags = None
+    pos_html = None
+    error_message = None
+    
+    if request.method == "POST":
+        input_text = request.form.get("user_input")
+        
+        if input_text:
+            logging.debug(f"Received input for POS tagging: {input_text}")
+            try:
+                # extract_pos_tags returns (pos_tags_list, html)
+                pos_tags, pos_html = extract_pos_tags(input_text, visualize=True)
+                if pos_tags is None:
+                    error_message = "Unable to process the text for POS tagging."
+            except Exception as e:
+                logging.exception("POS tagging failed")
+                error_message = "Unable to process the text for POS tagging."
+    
+    return render_template("pos.html", pos_tags=pos_tags, pos_html=pos_html, error_message=error_message)
+
+@app.route('/semantic', methods=["GET", "POST"])
 def semantic():
+    # Placeholder for future semantic parsing
     return render_template('semantic.html')
 
 @app.route('/about')
