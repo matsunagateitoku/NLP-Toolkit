@@ -101,6 +101,7 @@ def wordcloud():
 def pos():
     pos_tags = None
     pos_html = None
+    grouped_tags = None
     error_message = None
     
     if request.method == "POST":
@@ -109,16 +110,20 @@ def pos():
         if input_text:
             logging.debug(f"Received input for POS tagging: {input_text}")
             try:
-                # extract_pos_tags returns (pos_tags_list, html)
-                pos_tags, pos_html = extract_pos_tags(input_text, visualize=True)
+                # extract_pos_tags now returns (pos_tags_list, html, grouped_dict)
+                pos_tags, pos_html, grouped_tags = extract_pos_tags(input_text, visualize=True)
                 if pos_tags is None:
                     error_message = "Unable to process the text for POS tagging."
             except Exception as e:
                 logging.exception("POS tagging failed")
                 error_message = "Unable to process the text for POS tagging."
     
-    return render_template("pos.html", pos_tags=pos_tags, pos_html=pos_html, error_message=error_message)
-
+    return render_template("pos.html", 
+                         pos_tags=pos_tags, 
+                         pos_html=pos_html, 
+                         grouped_tags=grouped_tags,
+                         error_message=error_message)
+    
 @app.route('/semantic', methods=["GET", "POST"])
 def semantic():
     dependencies = None
