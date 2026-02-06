@@ -144,6 +144,27 @@ def semantic():
     
     return render_template('semantic.html', dependencies=dependencies, dep_html=dep_html, error_message=error_message)
 
+@app.route('/romanize', methods=["GET", "POST"])
+def romanize():
+    romanization_result = None
+    error_message = None
+    
+    if request.method == "POST":
+        input_text = request.form.get("user_input")
+        
+        if input_text:
+            logging.debug(f"Received input for romanization: {input_text[:100]}")
+            try:
+                romanization_result = romanize_text(input_text)
+                if romanization_result is None:
+                    error_message = "Unable to romanize the text."
+            except Exception as e:
+                logging.exception("Romanization failed")
+                error_message = "Unable to romanize the text."
+    
+    return render_template('romanize.html', result=romanization_result, error_message=error_message)
+
+
 @app.route('/about')
 def about():
     return render_template('about.html')
