@@ -217,3 +217,105 @@ body {
     border-radius: 4px;
     margin: 20px 0;
 }
+/* Semantic Parsing / Dependency Styles */
+.dep-table-container {
+    overflow-x: auto;
+    margin: 20px 0;
+}
+
+.dep-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.dep-table thead {
+    background-color: #28a745;
+    color: white;
+}
+
+.dep-table th {
+    padding: 12px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.dep-table td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #eee;
+}
+
+.dep-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.dep-badge {
+    display: inline-block;
+    background-color: #28a745;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: monospace;
+}
+
+.dep-legend {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    border-left: 4px solid #28a745;
+}
+
+.dep-legend h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.dep-legend h4 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    color: #555;
+}
+
+.example-section {
+    margin-top: 25px;
+    padding: 15px;
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid #dee2e6;
+}
+
+.example-text {
+    font-style: italic;
+    color: #495057;
+    margin-bottom: 10px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.example-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.example-list li {
+    padding: 5px 0;
+    color: #666;
+}
+
+.example-list strong {
+    color: #28a745;
+}
+
+.example-list code {
+    background-color: #e9ecef;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    color: #28a745;
+}
