@@ -319,3 +319,131 @@ body {
     font-size: 13px;
     color: #28a745;
 }
+/* POS Visualization */
+.pos-visualization {
+    padding: 20px;
+    background-color: white;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    margin: 20px 0;
+}
+
+/* Word-Tag List */
+.word-tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.word-tag-item {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 12px;
+    background-color: white;
+    border-radius: 4px;
+    border: 2px solid;
+    gap: 4px;
+}
+
+.word-tag-item strong {
+    font-size: 14px;
+}
+
+.word-tag-item .tag-label {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
+
+/* Color coding for POS types */
+.pos-NOUN { border-color: #3498db; }
+.pos-NOUN .tag-label { background-color: #3498db; color: white; }
+
+.pos-PROPN { border-color: #2980b9; }
+.pos-PROPN .tag-label { background-color: #2980b9; color: white; }
+
+.pos-VERB { border-color: #e74c3c; }
+.pos-VERB .tag-label { background-color: #e74c3c; color: white; }
+
+.pos-ADJ { border-color: #2ecc71; }
+.pos-ADJ .tag-label { background-color: #2ecc71; color: white; }
+
+.pos-ADV { border-color: #f39c12; }
+.pos-ADV .tag-label { background-color: #f39c12; color: white; }
+
+.pos-PRON { border-color: #9b59b6; }
+.pos-PRON .tag-label { background-color: #9b59b6; color: white; }
+
+.pos-DET { border-color: #1abc9c; }
+.pos-DET .tag-label { background-color: #1abc9c; color: white; }
+
+.pos-ADP { border-color: #34495e; }
+.pos-ADP .tag-label { background-color: #34495e; color: white; }
+
+.pos-CONJ, .pos-CCONJ, .pos-SCONJ { border-color: #e67e22; }
+.pos-CONJ .tag-label, .pos-CCONJ .tag-label, .pos-SCONJ .tag-label { 
+    background-color: #e67e22; color: white; 
+}
+
+.pos-AUX { border-color: #c0392b; }
+.pos-AUX .tag-label { background-color: #c0392b; color: white; }
+
+.pos-NUM { border-color: #16a085; }
+.pos-NUM .tag-label { background-color: #16a085; color: white; }
+
+.pos-PUNCT { border-color: #95a5a6; }
+.pos-PUNCT .tag-label { background-color: #95a5a6; color: white; }
+
+/* Grouped Tags Container */
+.grouped-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.group-box {
+    background-color: white;
+    border-radius: 6px;
+    padding: 15px;
+    border: 2px solid #ddd;
+}
+
+.group-title {
+    margin: 0 0 12px 0;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+}
+
+.group-title.pos-NOUN { background-color: #3498db; }
+.group-title.pos-VERB { background-color: #e74c3c; }
+.group-title.pos-ADJ { background-color: #2ecc71; }
+.group-title.pos-ADV { background-color: #f39c12; }
+.group-title.pos-PRON { background-color: #9b59b6; }
+.group-title.pos-DET { background-color: #1abc9c; }
+.group-title.pos-ADP { background-color: #34495e; }
+.group-title.pos-CONJ { background-color: #e67e22; }
+.group-title.pos-NUM { background-color: #16a085; }
+
+.group-words {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.group-word {
+    display: inline-block;
+    padding: 4px 10px;
+    background-color: #f8f9fa;
+    border-radius: 3px;
+    font-size: 14px;
+    border: 1px solid #dee2e6;
+}
