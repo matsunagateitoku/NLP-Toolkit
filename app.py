@@ -121,8 +121,24 @@ def pos():
 
 @app.route('/semantic', methods=["GET", "POST"])
 def semantic():
-    # Placeholder for future semantic parsing
-    return render_template('semantic.html')
+    dependencies = None
+    dep_html = None
+    error_message = None
+    
+    if request.method == "POST":
+        input_text = request.form.get("user_input")
+        
+        if input_text:
+            logging.debug(f"Received input for semantic parsing: {input_text}")
+            try:
+                dependencies, dep_html = extract_dependencies(input_text)
+                if dependencies is None:
+                    error_message = "Unable to process the text for semantic parsing."
+            except Exception as e:
+                logging.exception("Semantic parsing failed")
+                error_message = "Unable to process the text for semantic parsing."
+    
+    return render_template('semantic.html', dependencies=dependencies, dep_html=dep_html, error_message=error_message)
 
 @app.route('/about')
 def about():
