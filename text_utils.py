@@ -1,54 +1,15 @@
-# text_utils.py
 import spacy
 import logging
 from spacy import displacy
 from html import escape
-
-
-
-
+from wordcloud import WordCloud
+import matplotlib
+matplotlib.use('Agg')  # Use non-GUI backend
+import matplotlib.pyplot as plt
+import base64
+from io import BytesIO
 import requests
 from bs4 import BeautifulSoup
-
-def fetch_website_text(url):
-    """Fetch and extract text content from a URL."""
-    logging.debug(f"Fetching content from URL: {url}")
-    
-    try:
-        # Add headers to mimic a browser request
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
-        }
-        
-        # Fetch the webpage
-        response = requests.get(url, headers=headers, timeout=10)
-        response.raise_for_status()  # Raise an error for bad status codes
-        
-        # Parse HTML content
-        soup = BeautifulSoup(response.content, 'html.parser')
-        
-        # Remove script and style elements
-        for script in soup(["script", "style", "nav", "header", "footer"]):
-            script.decompose()
-        
-        # Get text
-        text = soup.get_text(separator=' ', strip=True)
-        
-        # Clean up whitespace
-        lines = (line.strip() for line in text.splitlines())
-        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
-        text = ' '.join(chunk for chunk in chunks if chunk)
-        
-        logging.debug(f"Successfully fetched {len(text)} characters from URL")
-        return text
-        
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Error fetching URL: {e}")
-        return None
-    except Exception as e:
-        logging.error(f"Error processing webpage: {e}")
-        return None
-
 
 # Set up logging
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -62,82 +23,10 @@ except Exception as e:
     logging.error(f"Error loading spaCy model: {e}")
     nlp = None  # If spaCy model fails to load, set nlp to None.
 
-def extract_dependencies(text):
-    """Extract dependency parse information from text using spaCy."""
-    logging.debug("Starting dependency parsing...")
-    
-    try:
-        if nlp is None:
-            logging.error("spaCy model is not loaded.")
-            raise ValueError("spaCy model is not loaded. Please ensure the model is correctly installed.")
-        
-        logging.debug(f"Processing text for dependency parsing: {text!r}")
-        doc = nlp(text)
-        
-        # Extract dependency information: (token, dependency_label, head_token)
-        dependencies = [(token.text, token.dep_, token.head.text) for token in doc]
-        
-        # Generate the displacy HTML for dependency visualization
-        html = displacy.render(doc, style="dep", page=True)
-        
-        logging.debug(f"Dependencies extracted: {dependencies}")
-        logging.debug("Displacy dependency visualization generated.")
-        
-        return dependencies, html
-        
-    except Exception as e:
-        logging.error(f"Error in extract_dependencies: {e}")
-        return None, None
 
-from wordcloud import WordCloud
-import matplotlib
-matplotlib.use('Agg')  # Use non-GUI backend
-import matplotlib.pyplot as plt
-import base64
-from io import BytesIO
-
-def generate_wordcloud(text, max_words=100, background_color='white'):
-    """Generate a word cloud from text and return as base64 encoded image."""
-    logging.debug("Starting word cloud generation...")
-    
-    try:
-        if not text or len(text.strip()) == 0:
-            logging.error("Empty text provided for word cloud")
-            return None
-        
-        logging.debug(f"Generating word cloud for text of length: {len(text)}")
-        
-        # Create word cloud
-        wordcloud = WordCloud(
-            width=800, 
-            height=400,
-            background_color=background_color,
-            max_words=max_words,
-            colormap='viridis'  # Nice color scheme
-        ).generate(text)
-        
-        # Create matplotlib figure
-        fig, ax = plt.subplots(figsize=(10, 5))
-        ax.imshow(wordcloud, interpolation='bilinear')
-        ax.axis('off')
-        plt.tight_layout(pad=0)
-        
-        # Convert to base64 for HTML embedding
-        buffer = BytesIO()
-        plt.savefig(buffer, format='png', bbox_inches='tight')
-        buffer.seek(0)
-        image_base64 = base64.b64encode(buffer.read()).decode()
-        plt.close(fig)
-        
-        logging.debug("Word cloud generated successfully")
-        return image_base64
-        
-    except Exception as e:
-        logging.error(f"Error generating word cloud: {e}")
-        return None
-
-
-
+# ============================================================================
+# NAMED ENTITY RECOGNITION (NER)
+# ============================================================================
 
 def extract_named_entities(text):
     """Extract named entities from the text using spaCy and generate displacy visualization."""
@@ -167,6 +56,11 @@ def extract_named_entities(text):
         # Handle errors gracefully
         logging.error(f"Error in extract_named_entities: {e}")
         return None, None
+
+
+# ============================================================================
+# PART-OF-SPEECH (POS) TAGGING
+# ============================================================================
 
 def extract_pos_tags(text, visualize=False):
     """
@@ -248,14 +142,131 @@ def extract_pos_tags(text, visualize=False):
         logging.error(f"Error in extract_pos_tags: {e}")
         return None, None, None
 
+
+# ============================================================================
+# SEMANTIC PARSING / DEPENDENCY PARSING
+# ============================================================================
+
+def extract_dependencies(text):
+    """Extract dependency parse information from text using spaCy."""
+    logging.debug("Starting dependency parsing...")
+    
+    try:
+        if nlp is None:
+            logging.error("spaCy model is not loaded.")
+            raise ValueError("spaCy model is not loaded. Please ensure the model is correctly installed.")
+        
+        logging.debug(f"Processing text for dependency parsing: {text!r}")
+        doc = nlp(text)
+        
+        # Extract dependency information: (token, dependency_label, head_token)
+        dependencies = [(token.text, token.dep_, token.head.text) for token in doc]
+        
+        # Generate the displacy HTML for dependency visualization
+        html = displacy.render(doc, style="dep", page=True)
+        
+        logging.debug(f"Dependencies extracted: {dependencies}")
+        logging.debug("Displacy dependency visualization generated.")
+        
+        return dependencies, html
+        
     except Exception as e:
-        logging.error(f"Error in extract_pos_tags: {e}")
+        logging.error(f"Error in extract_dependencies: {e}")
         return None, None
 
-    except Exception as e:
-        logging.error(f"Error in extract_pos_tags: {e}")
-        return None, None
 
+# ============================================================================
+# WORD CLOUD GENERATION
+# ============================================================================
+
+def generate_wordcloud(text, max_words=100, background_color='white'):
+    """Generate a word cloud from text and return as base64 encoded image."""
+    logging.debug("Starting word cloud generation...")
+    
+    try:
+        if not text or len(text.strip()) == 0:
+            logging.error("Empty text provided for word cloud")
+            return None
+        
+        logging.debug(f"Generating word cloud for text of length: {len(text)}")
+        
+        # Create word cloud
+        wordcloud = WordCloud(
+            width=800, 
+            height=400,
+            background_color=background_color,
+            max_words=max_words,
+            colormap='viridis'  # Nice color scheme
+        ).generate(text)
+        
+        # Create matplotlib figure
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.imshow(wordcloud, interpolation='bilinear')
+        ax.axis('off')
+        plt.tight_layout(pad=0)
+        
+        # Convert to base64 for HTML embedding
+        buffer = BytesIO()
+        plt.savefig(buffer, format='png', bbox_inches='tight')
+        buffer.seek(0)
+        image_base64 = base64.b64encode(buffer.read()).decode()
+        plt.close(fig)
+        
+        logging.debug("Word cloud generated successfully")
+        return image_base64
+        
+    except Exception as e:
+        logging.error(f"Error generating word cloud: {e}")
+        return None
+
+
+# ============================================================================
+# WEB SCRAPING
+# ============================================================================
+
+def fetch_website_text(url):
+    """Fetch and extract text content from a URL."""
+    logging.debug(f"Fetching content from URL: {url}")
+    
+    try:
+        # Add headers to mimic a browser request
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+        }
+        
+        # Fetch the webpage
+        response = requests.get(url, headers=headers, timeout=10)
+        response.raise_for_status()  # Raise an error for bad status codes
+        
+        # Parse HTML content
+        soup = BeautifulSoup(response.content, 'html.parser')
+        
+        # Remove script and style elements
+        for script in soup(["script", "style", "nav", "header", "footer"]):
+            script.decompose()
+        
+        # Get text
+        text = soup.get_text(separator=' ', strip=True)
+        
+        # Clean up whitespace
+        lines = (line.strip() for line in text.splitlines())
+        chunks = (phrase.strip() for line in lines for phrase in line.split("  "))
+        text = ' '.join(chunk for chunk in chunks if chunk)
+        
+        logging.debug(f"Successfully fetched {len(text)} characters from URL")
+        return text
+        
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Error fetching URL: {e}")
+        return None
+    except Exception as e:
+        logging.error(f"Error processing webpage: {e}")
+        return None
+
+
+# ============================================================================
+# ROMANIZATION
+# ============================================================================
 
 def romanize_text(text):
     """
@@ -272,13 +283,30 @@ def romanize_text(text):
             'detected_script': None
         }
         
-        # Detect script type
-        has_chinese = any('\u4e00' <= char <= '\u9fff' for char in text)
-        has_japanese = any('\u3040' <= char <= '\u309f' or '\u30a0' <= char <= '\u30ff' for char in text)
-        has_korean = any('\uac00' <= char <= '\ud7af' for char in text)
-        has_cyrillic = any('\u0400' <= char <= '\u04ff' for char in text)
-        has_arabic = any('\u0600' <= char <= '\u06ff' for char in text)
-        has_greek = any('\u0370' <= char <= '\u03ff' for char in text)
+        # Detect script type - check each character
+        has_chinese = False
+        has_japanese = False
+        has_korean = False
+        has_cyrillic = False
+        has_arabic = False
+        has_greek = False
+        
+        for char in text:
+            code_point = ord(char)
+            if 0x4E00 <= code_point <= 0x9FFF:  # CJK Unified Ideographs
+                has_chinese = True
+            elif (0x3040 <= code_point <= 0x309F) or (0x30A0 <= code_point <= 0x30FF):  # Hiragana or Katakana
+                has_japanese = True
+            elif 0xAC00 <= code_point <= 0xD7AF:  # Hangul
+                has_korean = True
+            elif 0x0400 <= code_point <= 0x04FF:  # Cyrillic
+                has_cyrillic = True
+            elif 0x0600 <= code_point <= 0x06FF:  # Arabic
+                has_arabic = True
+            elif 0x0370 <= code_point <= 0x03FF:  # Greek
+                has_greek = True
+        
+        logging.debug(f"Script detection - Chinese: {has_chinese}, Japanese: {has_japanese}, Korean: {has_korean}")
         
         # Chinese (Pinyin)
         if has_chinese:
@@ -290,8 +318,18 @@ def romanize_text(text):
                 results['detected_script'] = 'Chinese'
                 logging.debug(f"Romanized Chinese: {romanized[:100]}")
                 return results
-            except ImportError:
-                logging.warning("pypinyin not installed")
+            except ImportError as e:
+                logging.error(f"pypinyin not installed: {e}")
+                results['romanized'] = "ERROR: pypinyin library not installed"
+                results['method'] = 'Failed - missing pypinyin'
+                results['detected_script'] = 'Chinese (detection successful)'
+                return results
+            except Exception as e:
+                logging.error(f"Error romanizing Chinese: {e}")
+                results['romanized'] = f"ERROR: {str(e)}"
+                results['method'] = 'Failed'
+                results['detected_script'] = 'Chinese (detection successful)'
+                return results
         
         # Japanese (Romaji)
         if has_japanese:
@@ -305,27 +343,47 @@ def romanize_text(text):
                 results['detected_script'] = 'Japanese'
                 logging.debug(f"Romanized Japanese: {romanized[:100]}")
                 return results
-            except ImportError:
-                logging.warning("pykakasi not installed")
+            except ImportError as e:
+                logging.error(f"pykakasi not installed: {e}")
+                results['romanized'] = "ERROR: pykakasi library not installed"
+                results['method'] = 'Failed - missing pykakasi'
+                results['detected_script'] = 'Japanese (detection successful)'
+                return results
+            except Exception as e:
+                logging.error(f"Error romanizing Japanese: {e}")
+                results['romanized'] = f"ERROR: {str(e)}"
+                results['method'] = 'Failed'
+                results['detected_script'] = 'Japanese (detection successful)'
+                return results
         
         # Korean (Revised Romanization)
         if has_korean:
             try:
-                from korean_romanizer import Romanizer
-                r = Romanizer()
-                romanized = r.romanize(text)
+                from korean_romanizer.romanizer import Romanizer
+                r = Romanizer(text)
+                romanized = r.romanize()
                 results['romanized'] = romanized
                 results['method'] = 'Revised Romanization (Korean)'
                 results['detected_script'] = 'Korean'
                 logging.debug(f"Romanized Korean: {romanized[:100]}")
                 return results
-            except ImportError:
-                logging.warning("korean_romanizer not installed")
+            except ImportError as e:
+                logging.error(f"korean_romanizer not installed: {e}")
+                results['romanized'] = "ERROR: korean_romanizer library not installed"
+                results['method'] = 'Failed - missing korean_romanizer'
+                results['detected_script'] = 'Korean (detection successful)'
+                return results
+            except Exception as e:
+                logging.error(f"Error romanizing Korean: {e}")
+                results['romanized'] = f"ERROR: {str(e)}"
+                results['method'] = 'Failed'
+                results['detected_script'] = 'Korean (detection successful)'
+                return results
         
         # Cyrillic, Arabic, Greek - use transliterate library
         if has_cyrillic or has_arabic or has_greek:
             try:
-                from transliterate import translit, get_available_language_codes
+                from transliterate import translit
                 
                 if has_cyrillic:
                     lang_code = 'ru'  # Russian
@@ -343,17 +401,31 @@ def romanize_text(text):
                 results['detected_script'] = script_name
                 logging.debug(f"Romanized {script_name}: {romanized[:100]}")
                 return results
-            except:
-                logging.warning("transliterate library error")
+            except ImportError as e:
+                logging.error(f"transliterate not installed: {e}")
+                results['romanized'] = "ERROR: transliterate library not installed"
+                results['method'] = f'Failed - missing transliterate'
+                results['detected_script'] = f'{script_name} (detection successful)'
+                return results
+            except Exception as e:
+                logging.error(f"transliterate library error: {e}")
+                results['romanized'] = f"ERROR: {str(e)}"
+                results['method'] = 'Failed'
+                results['detected_script'] = script_name
+                return results
         
-        # If no special script detected or romanization failed
+        # If no special script detected
         results['romanized'] = text
-        results['method'] = 'No romanization needed (Latin script)'
+        results['method'] = 'No romanization needed (Latin script or unrecognized script)'
         results['detected_script'] = 'Latin/Unknown'
         
         return results
         
     except Exception as e:
         logging.error(f"Error in romanize_text: {e}")
-        return None
-
+        return {
+            'original': text,
+            'romanized': f"ERROR: {str(e)}",
+            'method': 'Error occurred',
+            'detected_script': 'Error'
+        }
