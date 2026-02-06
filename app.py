@@ -29,33 +29,33 @@ def ner():
     return render_template("ner.html", named_entities=named_entities, displacy_html=displacy_html)
 
 
-@app.route('/pos')
+@app.route('/pos', methods=["GET", "POST"])
 def pos():
-    return render_template('pos.html')
-
-# @app.route('/pos', methods=["GET", "POST"])
-# def pos():
-#     pos_tags = None
-#     pos_html = None
-
-#     if request.method == "POST":
-#         input_text = request.form.get("user_input")
-#         if input_text:
-#             logging.debug(f"Received input for POS tagging: {input_text}")
-#             try:
-#                 # extract_pos_tags returns (pos_tags_list, html)
-#                 pos_tags, pos_html = extract_pos_tags(input_text, visualize=True)
-#                 if pos_tags is None:
-#                     pos_tags = [("Error", "Unable to process the text for POS tagging.")]
-#             except Exception:
-#                 logging.exception("POS tagging failed")
-#                 pos_tags = [("Error", "Unable to process the text for POS tagging.")]
-#     return render_template("pos.html", pos_tags=pos_tags, pos_html=pos_html)
+    pos_tags = None
+    pos_html = None
+    error_message = None
+    
+    if request.method == "POST":
+        input_text = request.form.get("user_input")
+        
+        if input_text:
+            logging.debug(f"Received input for POS tagging: {input_text}")
+            try:
+                # extract_pos_tags returns (pos_tags_list, html)
+                pos_tags, pos_html = extract_pos_tags(input_text, visualize=True)
+                if pos_tags is None:
+                    error_message = "Unable to process the text for POS tagging."
+            except Exception as e:
+                logging.exception("POS tagging failed")
+                error_message = "Unable to process the text for POS tagging."
+    
+    return render_template("pos.html", pos_tags=pos_tags, pos_html=pos_html, error_message=error_message)
 
 
 # /web route: accepts a URL from a form, fetches the webpage text
 # (requires fetch_website_text function), performs named entity recognition (NER),
 # and renders the results in web.html. Shows an error message if processing fails.
+
 @app.route('/web', methods=["GET", 'POST'])
 def web():
     url = request.form.get('url_input')
