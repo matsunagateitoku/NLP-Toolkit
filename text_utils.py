@@ -255,3 +255,105 @@ def extract_pos_tags(text, visualize=False):
     except Exception as e:
         logging.error(f"Error in extract_pos_tags: {e}")
         return None, None
+
+
+def romanize_text(text):
+    """
+    Romanize text from various scripts to Latin script.
+    Supports Chinese (Pinyin), Japanese (Romaji), Korean, Cyrillic, Arabic, Greek, etc.
+    """
+    logging.debug(f"Starting romanization for text: {text[:100]}...")
+    
+    try:
+        results = {
+            'original': text,
+            'romanized': None,
+            'method': None,
+            'detected_script': None
+        }
+        
+        # Detect script type
+        has_chinese = any('\u4e00' <= char <= '\u9fff' for char in text)
+        has_japanese = any('\u3040' <= char <= '\u309f' or '\u30a0' <= char <= '\u30ff' for char in text)
+        has_korean = any('\uac00' <= char <= '\ud7af' for char in text)
+        has_cyrillic = any('\u0400' <= char <= '\u04ff' for char in text)
+        has_arabic = any('\u0600' <= char <= '\u06ff' for char in text)
+        has_greek = any('\u0370' <= char <= '\u03ff' for char in text)
+        
+        # Chinese (Pinyin)
+        if has_chinese:
+            try:
+                from pypinyin import lazy_pinyin, Style
+                romanized = ' '.join(lazy_pinyin(text, style=Style.TONE))
+                results['romanized'] = romanized
+                results['method'] = 'Pinyin (Chinese)'
+                results['detected_script'] = 'Chinese'
+                logging.debug(f"Romanized Chinese: {romanized[:100]}")
+                return results
+            except ImportError:
+                logging.warning("pypinyin not installed")
+        
+        # Japanese (Romaji)
+        if has_japanese:
+            try:
+                import pykakasi
+                kks = pykakasi.kakasi()
+                result = kks.convert(text)
+                romanized = ' '.join([item['hepburn'] for item in result])
+                results['romanized'] = romanized
+                results['method'] = 'Romaji (Japanese)'
+                results['detected_script'] = 'Japanese'
+                logging.debug(f"Romanized Japanese: {romanized[:100]}")
+                return results
+            except ImportError:
+                logging.warning("pykakasi not installed")
+        
+        # Korean (Revised Romanization)
+        if has_korean:
+            try:
+                from korean_romanizer import Romanizer
+                r = Romanizer()
+                romanized = r.romanize(text)
+                results['romanized'] = romanized
+                results['method'] = 'Revised Romanization (Korean)'
+                results['detected_script'] = 'Korean'
+                logging.debug(f"Romanized Korean: {romanized[:100]}")
+                return results
+            except ImportError:
+                logging.warning("korean_romanizer not installed")
+        
+        # Cyrillic, Arabic, Greek - use transliterate library
+        if has_cyrillic or has_arabic or has_greek:
+            try:
+                from transliterate import translit, get_available_language_codes
+                
+                if has_cyrillic:
+                    lang_code = 'ru'  # Russian
+                    script_name = 'Cyrillic'
+                elif has_arabic:
+                    lang_code = 'ar'  # Arabic
+                    script_name = 'Arabic'
+                elif has_greek:
+                    lang_code = 'el'  # Greek
+                    script_name = 'Greek'
+                
+                romanized = translit(text, lang_code, reversed=True)
+                results['romanized'] = romanized
+                results['method'] = f'Transliteration ({script_name})'
+                results['detected_script'] = script_name
+                logging.debug(f"Romanized {script_name}: {romanized[:100]}")
+                return results
+            except:
+                logging.warning("transliterate library error")
+        
+        # If no special script detected or romanization failed
+        results['romanized'] = text
+        results['method'] = 'No romanization needed (Latin script)'
+        results['detected_script'] = 'Latin/Unknown'
+        
+        return results
+        
+    except Exception as e:
+        logging.error(f"Error in romanize_text: {e}")
+        return None
+
