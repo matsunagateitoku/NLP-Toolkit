@@ -174,13 +174,8 @@ def extract_pos_tags(text, visualize=False):
 
     Returns:
       - pos_tags: list of tuples (token_text, coarse_pos, fine_grained_tag)
-      - html: If visualize==True, an HTML string representing tokens + POS; otherwise None
-
-    visualize:
-      - If False (default), function returns only the pos_tags list and html is None.
-      - If True, function will attempt to generate an HTML visualization. It prefers to
-        use spaCy's displaCy dependency visualizer (style='dep') for a richer visual,
-        falling back to a simple inline HTML token/POS representation if that fails.
+      - html: HTML string with color-coded POS tags under each word
+      - grouped_tags: dictionary grouping words by POS category
     """
     logging.debug("Starting POS tagging...")
     try:
@@ -195,30 +190,63 @@ def extract_pos_tags(text, visualize=False):
         pos_tags = [(token.text, token.pos_, token.tag_) for token in doc]
         logging.debug(f"POS tags extracted: {pos_tags}")
 
+        # Color mapping for different POS categories
+        pos_colors = {
+            'NOUN': '#3498db',      # Blue
+            'PROPN': '#2980b9',     # Dark Blue
+            'VERB': '#e74c3c',      # Red
+            'ADJ': '#2ecc71',       # Green
+            'ADV': '#f39c12',       # Orange
+            'PRON': '#9b59b6',      # Purple
+            'DET': '#1abc9c',       # Teal
+            'ADP': '#34495e',       # Dark Gray
+            'CONJ': '#e67e22',      # Dark Orange
+            'CCONJ': '#e67e22',     # Dark Orange
+            'SCONJ': '#d35400',     # Darker Orange
+            'AUX': '#c0392b',       # Dark Red
+            'NUM': '#16a085',       # Dark Teal
+            'PART': '#7f8c8d',      # Gray
+            'INTJ': '#8e44ad',      # Dark Purple
+            'PUNCT': '#95a5a6',     # Light Gray
+            'SYM': '#7f8c8d',       # Gray
+            'X': '#bdc3c7'          # Very Light Gray
+        }
+
         html = None
+        grouped_tags = {}
+        
         if visualize:
-            try:
-                # Try rendering a dependency visualization (useful to inspect token relations + POS)
-                logging.debug("Generating displacy dependency visualization for POS.")
-                # displacy 'dep' includes tokens and their POS/dependency; returns a full HTML page when page=True
-                html = displacy.render(doc, style="dep", page=True)
-            except Exception as e:
-                # Fallback: produce a simple inline HTML listing tokens with POS tags
-                logging.warning(f"displacy dependency render failed, falling back to simple HTML. Error: {e}")
-                token_spans = []
-                for token in doc:
-                    # Escape token text to avoid HTML injection
-                    t = escape(token.text)
-                    token_spans.append(
-                        f'<span style="display:inline-block;margin:6px;padding:4px;border-radius:4px;'
-                        f'background:#f2f2f2;border:1px solid #ddd;">'
-                        f'<strong>{t}</strong><br/><small>{escape(token.pos_)} ({escape(token.tag_)})</small>'
-                        f'</span>'
-                    )
-                html = '<div style="font-family:Arial,Helvetica,sans-serif;">' + ''.join(token_spans) + '</div>'
+            # Create inline word display with tags underneath
+            token_spans = []
+            for token in doc:
+                t = escape(token.text)
+                pos = escape(token.pos_)
+                color = pos_colors.get(token.pos_, '#95a5a6')
+                
+                token_spans.append(
+                    f'<span style="display:inline-block;margin:8px 4px;text-align:center;vertical-align:top;">'
+                    f'<div style="font-size:16px;font-weight:500;margin-bottom:4px;">{t}</div>'
+                    f'<div style="font-size:11px;font-weight:600;color:{color};'
+                    f'background-color:{color}22;padding:2px 6px;border-radius:3px;'
+                    f'border:1px solid {color};">{pos}</div>'
+                    f'</span>'
+                )
+            
+            html = '<div style="font-family:Arial,Helvetica,sans-serif;line-height:2.5;padding:10px;">' + ''.join(token_spans) + '</div>'
+        
+        # Group words by POS type
+        for token in doc:
+            pos_type = token.pos_
+            if pos_type not in grouped_tags:
+                grouped_tags[pos_type] = []
+            grouped_tags[pos_type].append(token.text)
 
         logging.debug("POS tagging completed.")
-        return pos_tags, html
+        return pos_tags, html, grouped_tags
+
+    except Exception as e:
+        logging.error(f"Error in extract_pos_tags: {e}")
+        return None, None, None
 
     except Exception as e:
         logging.error(f"Error in extract_pos_tags: {e}")
