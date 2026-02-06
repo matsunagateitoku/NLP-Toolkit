@@ -447,3 +447,86 @@ body {
     font-size: 14px;
     border: 1px solid #dee2e6;
 }
+/* Romanization Styles */
+.romanize-section {
+    margin: 20px 0;
+}
+
+.text-box {
+    padding: 20px;
+    border-radius: 6px;
+    font-size: 18px;
+    line-height: 1.6;
+    min-height: 80px;
+}
+
+.original-text {
+    background-color: #e3f2fd;
+    border: 2px solid #2196f3;
+    color: #1565c0;
+    font-weight: 500;
+}
+
+.romanized-text {
+    background-color: #f1f8e9;
+    border: 2px solid #8bc34a;
+    color: #33691e;
+    font-weight: 500;
+}
+
+.arrow-down {
+    text-align: center;
+    font-size: 32px;
+    color: #666;
+    margin: 15px 0;
+}
+
+.info-box {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff3e0;
+    border-left: 4px solid #ff9800;
+    border-radius: 4px;
+}
+
+.info-item {
+    padding: 5px 0;
+    color: #555;
+}
+
+.info-item strong {
+    color: #e65100;
+    margin-right: 5px;
+}
+
+.examples-section {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 6px;
+}
+
+.examples-section h3 {
+    margin-top: 0;
+    color: #333;
+}
+
+.script-list {
+    list-style: none;
+    padding: 0;
+}
+
+.script-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #dee2e6;
+    color: #666;
+}
+
+.script-list li:last-child {
+    border-bottom: none;
+}
+
+.script-list strong {
+    color: #007bff;
+    margin-right: 5px;
+}
