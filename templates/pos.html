@@ -1,4 +1,75 @@
-<!doctype html>
+{% extends "base.html" %}
+{% block title %}Part-of-Speech Tagging{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>🏷️ Part-of-Speech Tagging</h1>
+    <p class="subtitle">Analyze the grammatical structure of your text</p>
+    
+    <form method="POST" class="input-form">
+        <label for="user_input">Enter your text:</label>
+        <textarea name="user_input" id="user_input" rows="6" placeholder="Enter text to analyze..." required></textarea>
+        
+        <button type="submit">Analyze POS Tags</button>
+    </form>
+    
+    {% if error_message %}
+        <div class="error">
+            ❌ {{ error_message }}
+        </div>
+    {% endif %}
+    
+    {% if pos_html %}
+        <div class="result">
+            <h2>Dependency Visualization</h2>
+            <div class="visualization">
+                {{ pos_html|safe }}
+            </div>
+        </div>
+    {% endif %}
+    
+    {% if pos_tags %}
+        <div class="result">
+            <h2>POS Tags Details</h2>
+            <div class="pos-table-container">
+                <table class="pos-table">
+                    <thead>
+                        <tr>
+                            <th>Token</th>
+                            <th>POS (Coarse)</th>
+                            <th>Tag (Fine-grained)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for token, pos, tag in pos_tags %}
+                        <tr>
+                            <td><strong>{{ token }}</strong></td>
+                            <td>{{ pos }}</td>
+                            <td><code>{{ tag }}</code></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="pos-legend">
+                <h3>Common POS Tags:</h3>
+                <ul>
+                    <li><strong>NOUN</strong> - Noun (person, place, thing)</li>
+                    <li><strong>VERB</strong> - Verb (action, state)</li>
+                    <li><strong>ADJ</strong> - Adjective (describes noun)</li>
+                    <li><strong>ADV</strong> - Adverb (describes verb/adjective)</li>
+                    <li><strong>PRON</strong> - Pronoun (I, you, he, she, it)</li>
+                    <li><strong>DET</strong> - Determiner (the, a, an)</li>
+                    <li><strong>ADP</strong> - Adposition (in, on, at, to)</li>
+                    <li><strong>CONJ</strong> - Conjunction (and, but, or)</li>
+                </ul>
+            </div>
+        </div>
+    {% endif %}
+    
+    <p><a href="{{ url_for('index') }}">← Back to home</a></p>
+</div>
+{% endblock %}<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
