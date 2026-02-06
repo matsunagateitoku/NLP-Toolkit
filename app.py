@@ -1,9 +1,15 @@
-# app.py
+
 from flask import Flask, render_template, request
-from text_utils import extract_named_entities, generate_wordcloud, fetch_website_text, extract_pos_tags, extract_dependencies, romanize_textimport logging
+from text_utils import extract_named_entities, generate_wordcloud, fetch_website_text, extract_pos_tags, extract_dependencies, romanize_text
+import logging
 
 # Set up logging for the Flask app
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+app = Flask(__name__)
+
+
+
+
 
 app = Flask(__name__)
 
