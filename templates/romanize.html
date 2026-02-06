@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Romanization{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>🔤 Romanization Tool</h1>
+    <p class="subtitle">Convert text from various scripts (Chinese, Japanese, Korean, Arabic, Cyrillic, Greek) to Latin script</p>
+    
+    <form method="POST" class="input-form">
+        <label for="user_input">Enter text in any script:</label>
+        <textarea name="user_input" id="user_input" rows="6" placeholder="Enter Chinese, Japanese, Korean, Arabic, Cyrillic, or Greek text..." required></textarea>
+        
+        <button type="submit">Romanize</button>
+    </form>
+    
+    {% if error_message %}
+        <div class="error">
+            ❌ {{ error_message }}
+        </div>
+    {% endif %}
+    
+    {% if result %}
+        <div class="result">
+            <div class="romanize-section">
+                <h2>Original Text</h2>
+                <div class="text-box original-text">
+                    {{ result.original }}
+                </div>
+            </div>
+            
+            <div class="arrow-down">↓</div>
+            
+            <div class="romanize-section">
+                <h2>Romanized Text</h2>
+                <div class="text-box romanized-text">
+                    {{ result.romanized }}
+                </div>
+            </div>
+            
+            <div class="info-box">
+                <div class="info-item">
+                    <strong>Detected Script:</strong> {{ result.detected_script }}
+                </div>
+                <div class="info-item">
+                    <strong>Method:</strong> {{ result.method }}
+                </div>
+            </div>
+        </div>
+        
+        <div class="examples-section">
+            <h3>Supported Scripts:</h3>
+            <ul class="script-list">
+                <li><strong>Chinese:</strong> Converts to Pinyin with tone marks (e.g., 你好 → nǐ hǎo)</li>
+                <li><strong>Japanese:</strong> Converts Hiragana/Katakana to Romaji (e.g., こんにちは → konnichiwa)</li>
+                <li><strong>Korean:</strong> Converts Hangul to Revised Romanization (e.g., 안녕하세요 → annyeonghaseyo)</li>
+                <li><strong>Cyrillic:</strong> Converts Russian/Cyrillic to Latin (e.g., Привет → Privet)</li>
+                <li><strong>Arabic:</strong> Converts Arabic script to Latin (e.g., مرحبا → mrhba)</li>
+                <li><strong>Greek:</strong> Converts Greek to Latin (e.g., Γεια σου → Geia sou)</li>
+            </ul>
+        </div>
+    {% endif %}
+    
+    <p><a href="{{ url_for('index') }}">← Back to home</a></p>
+</div>
+{% endblock %}
